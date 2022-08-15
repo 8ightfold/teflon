@@ -13,10 +13,10 @@ namespace teflon::unit
 	struct nanosecond {  static inline constexpr long double value = 1.0E-9L;  };
 	struct picosecond {  static inline constexpr long double value = 1.0E-12L; };
 	struct femtosecond { static inline constexpr long double value = 1.0E-15L; };
-	struct minute {      static inline constexpr long double value = 60.0L *   second::value; };
-	struct hour {        static inline constexpr long double value = 60.0L *   minute::value; };
-	struct day {         static inline constexpr long double value = 24.0L *   hour::value;   };
-	struct week {        static inline constexpr long double value = 7.0L *    day::value;    };
+	struct minute {      static inline constexpr long double value = 60.0L   * second::value; };
+	struct hour {        static inline constexpr long double value = 60.0L   * minute::value; };
+	struct day {         static inline constexpr long double value = 24.0L   * hour::value;   };
+	struct week {        static inline constexpr long double value = 7.0L    * day::value;    };
 	struct year {        static inline constexpr long double value = 365.25L * day::value;    };
 
 	namespace impl
@@ -36,6 +36,11 @@ namespace teflon::unit
 		template <>	struct is_unit_time<picosecond>  : std::true_type {};
 		template <>	struct is_unit_time<femtosecond> : std::true_type {};
 	}
+
+	template <typename Ty>
+	struct is_unit_time {
+		static inline constexpr bool value = impl::is_unit_time<Ty>::value;
+	};
 }
 
 struct time {
@@ -53,29 +58,5 @@ struct time {
 	using ps =  teflon::unit::picosecond;
 	using fs =  teflon::unit::femtosecond;
 };
-
-namespace teflon::unit
-{
-	namespace impl
-	{
-		template <>	struct is_unit_time<time::yr>  : std::true_type {};
-		template <>	struct is_unit_time<time::wk>  : std::true_type {};
-		template <>	struct is_unit_time<time::dy>  : std::true_type {};
-		template <>	struct is_unit_time<time::hr>  : std::true_type {};
-		template <>	struct is_unit_time<time::min> : std::true_type {};
-		template <>	struct is_unit_time<time::s>   : std::true_type {};
-		template <>	struct is_unit_time<time::ds>  : std::true_type {};
-		template <>	struct is_unit_time<time::cs>  : std::true_type {};
-		template <>	struct is_unit_time<time::ms>  : std::true_type {};
-		template <>	struct is_unit_time<time::us>  : std::true_type {};
-		template <>	struct is_unit_time<time::ns>  : std::true_type {};
-		template <>	struct is_unit_time<time::fs>  : std::true_type {};
-	}
-
-	template <typename Ty>
-	struct is_unit_time {
-		static inline constexpr bool value = impl::is_unit_time<Ty>::value;
-	};
-}
 
 #endif // TEFLON_UTIL_UNITS_TIME_HPP
