@@ -60,11 +60,15 @@ namespace teflon::util
         template <teflon::unit::is_unit_time_c Time_t>
         inline long double elapsed_time()
         {
-            time_point_t end;
-            if (this->m_is_running) { end = steady_clock_t::now(); }
-            else { end = this->m_end; }
+            if (this->m_has_started)
+            {
+                time_point_t end;
+                if (this->m_is_running) { end = steady_clock_t::now(); }
+                else { end = this->m_end; }
 
-            return std::chrono::duration_cast<std::chrono::nanoseconds>(end - this->m_start).count() / (Time_t::value * 1.0E9L);
+                return { std::chrono::duration_cast<std::chrono::nanoseconds>(end - this->m_start).count() / (Time_t::value * 1.0E9L) };
+            }
+            else return {};
         };
 
     private:
