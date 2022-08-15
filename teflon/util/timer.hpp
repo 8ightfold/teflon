@@ -13,7 +13,10 @@ namespace teflon::util
     {
         using steady_clock_t = std::chrono::high_resolution_clock;
         using time_point_t = steady_clock_t::time_point;
+        using time_t = typename decltype(time::s::value);
     public:
+        timer() : m_start(steady_clock_t::now()) {}
+
         inline void start()
         {
             this->m_is_running = true;
@@ -35,38 +38,60 @@ namespace teflon::util
             this->m_start = steady_clock_t::now();
         }
 
+        // Fast time functions
+
         template <teflon::unit::is_unit_time_c Time_t>
-        inline auto start_time() -> std::optional<long double>
+        inline auto qstart_time() -> time_t
+        {
+            auto ns_value = std::chrono::duration_cast<std::chrono::nanoseconds>(this->m_start.time_since_epoch()).count();
+            return { ns_value / (Time_t::value * 1.0E9L) };
+        };
+
+        template <teflon::unit::is_unit_time_c Time_t>
+        inline auto qend_time() -> time_t
+        {
+            auto ns_value = std::chrono::duration_cast<std::chrono::nanoseconds>(this->m_end.time_since_epoch()).count();
+            return { ns_value / (Time_t::value * 1.0E9L) };
+        };
+
+        template <teflon::unit::is_unit_time_c Time_t>
+        inline auto qelapsed_time() -> time_t
+        {
+            time_point_t end;
+            if (this->m_is_running) { end = steady_clock_t::now(); }
+            else { end = this->m_end; }
+
+            return { std::chrono::duration_cast<std::chrono::nanoseconds>(end - this->m_start).count() / (Time_t::value * 1.0E9L) };
+        };
+
+        // Safe time functions
+
+        template <teflon::unit::is_unit_time_c Time_t>
+        inline auto start_time() -> std::optional<time_t>
         {
             if (this->m_has_started)
             {
-                auto ns_value = std::chrono::duration_cast<std::chrono::nanoseconds>(this->m_end.time_since_epoch()).count();
-                return { ns_value / (Time_t::value * 1.0E9L) };
+                return { qstart_time<Time_t>() };
             }
             else return {};
-        }
+        };
 
         template <teflon::unit::is_unit_time_c Time_t>
-        inline auto end_time() -> std::optional<long double>
+        inline auto end_time() -> std::optional<time_t>
         {
             if (!this->m_is_running && this->m_has_ended)
             {
-                auto ns_value = std::chrono::duration_cast<std::chrono::nanoseconds>(this->m_end.time_since_epoch()).count();
-                return { ns_value / (Time_t::value * 1.0E9L) };
+                return { qend_time<Time_t>() };
             }
             else return {};
-        }
+        };
 
         template <teflon::unit::is_unit_time_c Time_t>
-        inline long double elapsed_time()
+        inline auto elapsed_time() -> std::optional<time_t>
         {
             if (this->m_has_started)
             {
-                time_point_t end;
-                if (this->m_is_running) { end = steady_clock_t::now(); }
-                else { end = this->m_end; }
-
-                return { std::chrono::duration_cast<std::chrono::nanoseconds>(end - this->m_start).count() / (Time_t::value * 1.0E9L) };
+                return { qelapsed_time<Time_t>() };
             }
             else return {};
         };
