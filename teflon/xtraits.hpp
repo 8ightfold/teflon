@@ -7,6 +7,7 @@
 #include <teflon/xtraits/conversions/pointer_to_reference.hpp>
 #include <teflon/xtraits/conversions/remove_cvr.hpp>
 
+#include <teflon/xtraits/info/has_ostream_overload.hpp>
 #include <teflon/xtraits/info/is_void_pointer.hpp>
 
 #endif // TEFLON_XTRAITS_HPP
