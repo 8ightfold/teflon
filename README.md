@@ -1,6 +1,9 @@
+## Update: 
+Dead project. Code is pretty old and bad. Sorry Eczbek!
+
 # Teflon Library
 
-This is a compilation of all my projects, plus a little more. This library is not even close to being finished, but this is what is included at the moment.
+~~This is a compilation of all my projects, plus a little more. This library is not even close to being finished, but this is what is included at the moment.~~
 
 
 - **Dawn:** Constexpr oriented functionality, aims to make your life a bit easier.
